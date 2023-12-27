@@ -1,13 +1,13 @@
 # Here, we'd be writing modular codes for the purpose of reading or ingesting the dataset
 
-import os
-import sys
+import os, sys
 from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+from src.components.data_preprocessing import DataTransform
 
 @dataclass
 class DataIngestionConfig:
@@ -19,13 +19,12 @@ class DataIngestionConfig:
 @dataclass
 class DataIngestion:
     '''
-    'ingestion_config' is set as an instance of the DataIngestionConfig class.
-    This is done so that we can access the attributes of the DataIngestionConfig class.
     The initiate_data_ingestion method is used to read the dataset, split it into train and test sets,
     and save the train and test sets as csv files in the artifacts folder.
     '''
-
-    ingestion_config = DataIngestionConfig()
+    train_data_path = DataIngestionConfig().train_data_path
+    test_data_path = DataIngestionConfig().test_data_path
+    raw_data_path = DataIngestionConfig().raw_data_path
 
     def initiate_data_ingestion(self):
         logging.info('Entered the data ingestion method or component')
@@ -33,30 +32,28 @@ class DataIngestion:
             df = pd.read_csv('notebook/StudentsPerformance.csv')
             logging.info('Data read successfully')
 
-            os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True) 
-            # os.makedirs creates a directory, with respect to the dir_name (...artifacts/train.csv), so long as it doesn't exist
+            os.makedirs(os.path.dirname(self.train_data_path), exist_ok=True) 
+            # os.makedirs creates an empty directory, with respect to the dir_name (artifacts/train.csv), so long as it doesn't exist
             
-            df.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
+            df.to_csv(self.raw_data_path, index=False, header=True)
             # having read the dataset, it is then stored as 'data.csv' inside the already created dir (i.e, artifacts/data.csv)
 
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
             # next, df is splitted into train and test sets, with the test set being 20% of the entire dataset
              
-            logging.info('Train test split initiated')
+            logging.info('Train-test split initiated')
 
-            train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
+            train_set.to_csv(self.train_data_path, index=False, header=True)
             # the train_set is stored as 'train.csv' inside the already created dir (i.e, artifacts/train.csv)
-            test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)
+            test_set.to_csv(self.test_data_path, index=False, header=True)
             # the test_set is stored as 'test.csv' inside the already created dir (i.e, artifacts/test.csv)
             logging.info('Data ingestion completed')
 
-            return (
-                self.ingestion_config.train_data_path, # returns the path to the train set
-                self.ingestion_config.test_data_path  # returns the path to the test set
-            )
+            return self.raw_data_path  # returns the path to the raw data set
         except Exception as e:  # e denotes the string representation of the error
             logging.error(f'Error while ingesting data: {e}')
             raise CustomException(e,sys)
         
 if __name__ == '__main__':
-    DataIngestion().initiate_data_ingestion()
+    data = DataIngestion().initiate_data_ingestion()
+    DataTransform().initiate_transform(data)
