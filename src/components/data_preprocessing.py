@@ -19,6 +19,7 @@ class DataTransform:
     logging.info('Data transformation has begun')
 
     def initiate_transform(self, data_path):
+        '''Accepts as input the data filepath. Performs imputation and transformation. Returns x and y as ndarray'''
         try:
             raw_df = pd.read_csv(data_path)
             self.x = raw_df.drop('math score', axis=1)
@@ -41,7 +42,7 @@ class DataTransform:
             save_object(file_path=self.preprocessed_obj_file_path, obj=transformer_obj)
             logging.info('pkl file has been saved successfully')
 
-            return x_transformed, array(self.y)
+            return x_transformed, array(self.y), self.preprocessed_obj_file_path
         except Exception as e:
             logging.error(f'Error while transforming data: {e}')
             raise CustomException(e,sys)

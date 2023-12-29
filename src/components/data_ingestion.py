@@ -4,10 +4,12 @@ import os, sys
 from src.exception import CustomException
 from src.logger import logging
 import pandas as pd
-
 from sklearn.model_selection import train_test_split
+
 from dataclasses import dataclass
 from src.components.data_preprocessing import DataTransform
+from src.components.model_trainer import ModelTrainer
+import warnings; warnings.filterwarnings('ignore')
 
 @dataclass
 class DataIngestionConfig:
@@ -27,6 +29,7 @@ class DataIngestion:
     raw_data_path = DataIngestionConfig().raw_data_path
 
     def initiate_data_ingestion(self):
+        '''Returns the data path of the already ingested dataset'''
         logging.info('Entered the data ingestion method or component')
         try:
             df = pd.read_csv('notebook/StudentsPerformance.csv')
@@ -56,4 +59,5 @@ class DataIngestion:
         
 if __name__ == '__main__':
     data = DataIngestion().initiate_data_ingestion()
-    DataTransform().initiate_transform(data)
+    x, y, _ = DataTransform().initiate_transform(data)  # preprocessed path isn't needed
+    print(ModelTrainer().initiate_model_training(x,y))
