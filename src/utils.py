@@ -1,6 +1,6 @@
 # Here, we'd define the basic utilities/functions needed by other modules in this project, where it can be called and used
 
-import dill, sys, os
+import pickle, sys, os
 from src.exception import CustomException
 from sklearn.metrics import r2_score
 from sklearn.model_selection import RandomizedSearchCV
@@ -12,11 +12,20 @@ def save_object(file_path, obj):
         # os.makedirs creates an empty directory, with respect to the given dir_name, so long as it doesn't exist
 
         with open(file_path,'wb') as f:  # f is used to reference the filepath, after opening the file
-            dill.dump(obj, f)  # the transformer obj is stored in the filepath
+            pickle.dump(obj, f)  # the transformer obj is stored in the filepath
 
     except Exception as e:
-        raise CustomException(e, sys)
-
+        raise CustomException(e,sys)
+    
+def load_object(file_path):
+    '''Returns object that is present in the given file path'''
+    try:
+        with open(file_path,'rb') as f:
+            return pickle.load(f)
+        
+    except Exception as e:
+        raise CustomException(e,sys)
+    
 def evaluate_model(x_train,x_test,y_train,y_test,models:dict,params:dict):
     '''Returns as a dict all estimators with thier corresponding test_pred_score'''
     try:

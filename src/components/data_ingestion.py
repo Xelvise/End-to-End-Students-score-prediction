@@ -7,7 +7,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from dataclasses import dataclass
-from src.components.data_preprocessing import DataTransform
+from src.components.data_transformation import DataTransform
 from src.components.model_trainer import ModelTrainer
 import warnings; warnings.filterwarnings('ignore')
 

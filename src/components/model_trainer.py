@@ -6,7 +6,7 @@ from sklearn.linear_model import LinearRegression
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor
-from xgboost import XGBRegressor
+# from xgboost import XGBRegressor
 
 from dataclasses import dataclass
 from src.exception import CustomException
@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split as tts
 
 @dataclass
 class ModelTrainer:
-    trained_model_filepath = os.path.join('artifacts','model.pkl')
+    estimator_obj_filepath = os.path.join('artifacts','model.pkl')
 
     def initiate_model_training(self,x,y,preprocessed_path=None):
         '''Accepts independent and target variables (x and y). Splits x and y into train and test set.\n
@@ -31,7 +31,7 @@ class ModelTrainer:
             "K-Neighbors Regressor": KNeighborsRegressor(),
             "Decision Tree": DecisionTreeRegressor(),
             "Random Forest Regressor": RandomForestRegressor(),
-            "XGBRegressor": XGBRegressor(),
+            # "XGBRegressor": XGBRegressor(),
             "AdaBoost Regressor": AdaBoostRegressor(),
             "Gradient Boosting": GradientBoostingRegressor()}
 
@@ -62,7 +62,7 @@ class ModelTrainer:
 
             best_model = models[best_model_name]  # returns an untrained estimator of the best model
             model_obj = best_model.fit(x_train,y_train)  # returns a fitted estimator  
-            save_object(self.trained_model_filepath, model_obj)
+            save_object(self.estimator_obj_filepath, model_obj)
 
             return best_model_score  # returns performance of the best estimator
         
