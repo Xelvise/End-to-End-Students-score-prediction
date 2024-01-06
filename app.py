@@ -26,7 +26,7 @@ def predict_datapoint():
         output = predict(df)
         return render_template('home.html', results=output[0])
 
-# Creating an API endpoint url
+# Creating an API endpoint for the model
 @app.route('/api-predict', methods=['POST'])
 def pred():
     dict = request.get_json()
