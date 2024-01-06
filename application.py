@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, jsonify
 from src.pipeline.predict_pipeline import DataChannel, predict
 
-app = Flask(__name__)
+application = Flask(__name__)
 
-@app.route('/')
+@application.route('/')
 def index():
     return render_template('index.html')
 
-@app.route('/predict-data', methods=['GET','POST'])
+@application.route('/predict-data', methods=['GET','POST'])
 def predict_datapoint():
     if request.method == 'GET':
         return render_template('home.html')
@@ -27,7 +27,7 @@ def predict_datapoint():
         return render_template('home.html', results=output[0])
 
 # Creating an API endpoint url
-@app.route('/api-predict', methods=['POST'])
+@application.route('/api-predict', methods=['POST'])
 def pred():
     dict = request.get_json()
     data = DataChannel(
@@ -45,4 +45,4 @@ def pred():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run()
